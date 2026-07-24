@@ -1,0 +1,11 @@
+{
+  "name": "entry",
+  "version": "1.0.0",
+  "description": "VPBleSDK 集成示例 entry。SDK HAR 已自包含(6 个杰理 HAR 在其内部 libs/),只需声明 sdk 一个依赖。",
+  "main": "",
+  "author": "",
+  "license": "",
+  "dependencies": {
+    "@veepoo/vpble-sdk": "file:../har/veepoo-vpble-sdk-1.0.0.har"
+  }
+}

@@ -1,0 +1,1 @@
+# Demo obfuscation rules (release obfuscation currently disabled in build-profile.json5).

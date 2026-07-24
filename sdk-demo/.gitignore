@@ -1,0 +1,8 @@
+/build/
+/oh_modules/
+/.hvigor/
+/.idea/
+/.DS_Store
+**/build/
+**/oh_modules/
+oh-package-lock.json5

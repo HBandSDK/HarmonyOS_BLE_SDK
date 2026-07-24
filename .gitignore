@@ -1,0 +1,21 @@
+# —— 交付仓根 .gitignore(由 publish/init 脚本从本模板写入,作单一事实源)——
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# HarmonyOS / DevEco Studio 生成物(集成方打开 sdk-demo 后产生)
+**/build/
+**/oh_modules/
+**/.hvigor/
+**/.test/
+**/.cxx
+
+# 编辑器 / 本地
+*.log
+*.iml
+.vscode/
+.idea/
+local.properties
+BuildProfile.ets
+oh-package-lock.json5

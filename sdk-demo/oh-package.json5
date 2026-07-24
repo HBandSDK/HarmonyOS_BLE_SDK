@@ -1,0 +1,8 @@
+{
+  "modelVersion": "5.0.0",
+  "name": "vpbledemo",
+  "version": "1.0.0",
+  "description": "VPBleSDK (Veepoo BLE) HarmonyOS 集成示例工程",
+  "dependencies": {},
+  "devDependencies": {}
+}
