@@ -4,7 +4,6 @@ Veepoo 手环 BLE 协议通信 SDK。通过单条 GATT 连接完成设备扫描�
 
 - **SDK 版本**:见 `VERSION`(当前 1.0.0)
 - **平台**:HarmonyOS,compatibleSdkVersion `5.0.0(12)`,targetSdkVersion `6.0.2(22)`
-- **形态**:字节码 HAR(0 源码 + `.d.ets` 类型声明),源码不外泄
 - **依赖**:6 个杰理(JieLi)HAR(RCSP/OTA/位图转换/PAR 序列化),随包提供
 
 ## 本目录结构
