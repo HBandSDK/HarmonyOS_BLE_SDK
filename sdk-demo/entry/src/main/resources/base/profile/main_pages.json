@@ -29,10 +29,12 @@
     "pages/subPages/AlarmClockPage",
     "pages/subPages/WorldClockPage",
     "pages/subPages/ReminderPage",
-      "pages/subPages/DevicePage",
-      "pages/subPages/AuthPage",
-      "pages/subPages/DialPage",
-      "pages/subPages/OtaPage",
-      "pages/subPages/SpecialDevicePage"
+    "pages/subPages/DevicePage",
+    "pages/subPages/AuthPage",
+    "pages/subPages/DialPage",
+    "pages/subPages/OtaPage",
+    "pages/subPages/SpecialDevicePage",
+    "pages/subPages/HealthGlancePage",
+    "pages/subPages/WomenPage"
   ]
 }

@@ -76,7 +76,8 @@ struct EcgPage {
   private async readSavedId(): Promise<void> {
     const r = await VPBleSDK.getInstance().ecgService.getSavedId();
     if (r.success) {
-      this.addLog(`保存 ID：${r.id ?? 0}（report=${r.isReport}）`);
+      const ids = r.ids && r.ids.length > 0 ? r.ids.join(', ') : '无';
+      this.addLog(`保存 ID：${ids}（report=${r.isReport}）`);
     } else {
       this.addLog(`读取 ID 失败：${r.errorMessage ?? '未知'}`);
     }

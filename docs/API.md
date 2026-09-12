@@ -18,13 +18,18 @@
 | `on(event, cb)` / `off(event, cb)` | | 事件订阅/取消 |
 | `hasJlRcspService()` / `isRcspInitialized()` | `→ boolean` | 杰理 RCSP 能力/状态 |
 | `connectDeviceIsJL()` | `→ boolean \| null` | 当前设备是否杰理芯 |
+| `isNativeLinkUp()` | `→ boolean` | 原生 GATT 链路是否已建立(见下方说明) |
+| `setConnectionConfirmation(isNeed)` | `boolean → void` | 是否要求设备端弹连接确认框 |
+| `getConnectDeviceRssi(cb?)` | `(rssi: number) => void → void` | 读当前连接的信号强度 |
 
-## 29 个领域服务(getter 属性)
+> **`isNativeLinkUp()` 的用途**:`getState()` 在整个 `BINDING` 阶段(服务发现 / 订阅 / MTU / 认证 / RCSP 初始化)都不变,无法区分「原生链路根本没连上」与「已连上、正在跑初始化」。做重连策略时这个区分很关键:前者说明目标地址不可达,应尽快换一条建链路径;后者只是初始化慢,继续等即可。
+
+## 31 个领域服务(getter 属性)
 
 | 服务 getter | 代表方法 | 用途 |
 |---|---|---|
 | `authService` | 认证相关 | 设备密钥认证(连接时自动调用) |
-| `deviceService` | `getBatteryInfo()`, `getDeviceInfo()`, `getFeatureList()` | 设备信息/电量/特性位 |
+| `deviceService` | `getBatteryInfo()` | 电量(设备信息/特性位在连接时自动读入 `VPDevice`,见下方说明) |
 | `healthService` | `getStepData(day)`, `getSleepData(day)`, `getHealthData(day,pos,cb)`, `getMaxStorageDays()` | 步数/睡眠/健康日数据读取 |
 | `heartRateService` | `startMeasurement(...)`, `stopMeasurement()`, `getAlarmThreshold(type)`, `onHeartRatePush` | 心率测量/报警阈值 |
 | `bloodPressureService` | `getPrivateMode()`, 测量控制 | 血压 |
@@ -32,17 +37,19 @@
 | `bodyTemperatureService` | `getHistory()`, 测量 | 体温 |
 | `bloodSugarService` | `getSixCalibration()`, 测量/校准 | 血糖 |
 | `bloodComponentsService` | `getCalibration()`, 测量/校准 | 血液成分(血脂/尿酸等) |
-| `ecgService` | `getSavedId()`, `getHistory()`, 测量 | 心电 |
+| `ecgService` | `getSavedId()`(→ `ids: number[]`), `getHistory()`, 测量 | 心电 |
 | `bodyCompositionService` | `getSavedIds()`, `getHistory()` | 身体成分 |
 | `manualMeasurementService` | `readData()` | 手动测量(血压等结构) |
 | `stressService` | 测量/读取 | 压力 |
 | `skinElectricService` | 测量/读取 | 肤电 |
+| `healthGlanceService` | `isSupported()`, `startMeasurement()`, `stopMeasurement()`, `onHealthGlanceProgress/Complete/Error()` | 微体检(一键体检) |
 | `autoMeasureService` | `readConfig()`, `setConfig()` | 自动监测(周期测量)配置 |
 | `alarmClockService` | 读/设/删闹钟 | 闹钟 |
-| `contactService` | `add()`, `delete()`, SOS 设置 | 联系人 |
+| `contactService` | `list()`, `save(item, modifySosOnly?, supportSos?)`, `delete(id)`, `swap()`, `getSosTimes()` / `setSosTimes()` | 联系人 / SOS |
 | `reminderService` | 健康/久坐提醒读设 | 提醒 |
 | `weatherService` | `getInfo()`, `setForecast(...)` | 天气 |
 | `worldClockService` | `add()`, `delete()` | 世界时钟 |
+| `womenService` | `setWomenState(setting)`, `readWomenState(tag?)` | 女性生理周期(无状态/月经/备孕/怀孕/妈咪 五态) |
 | `deviceControlService` | `syncTimeNow()`, `switchLanguage()`, 抬腕亮屏/屏幕亮度/查找设备/拍照/清数据/恢复出厂 | 设备控制 |
 | `sportService` | `readModeCrc()`, `readData()`, 运动模式控制 | 运动 |
 | `dialService` | `readMarketDial()`, `readPhotoDial()`, `transferMarketDial()`, `setCustomUIStyle()` | 表盘(市场/照片/中科 DOOG) |
@@ -59,7 +66,8 @@
 
 - `BleDevice`:`deviceName`、`deviceId`(虚拟地址,建连用)、`mac`(真实 MAC,显示用)、`rssi`
 - `BatteryInfo`:`level`(0–100,`hasPercentage` 为真时有效)、`powerMode`、`lowBattery`、`voltage`
-- `VPDevice`:`mac`、`featureList`(24 项特性位)
+- `VPDevice`(`getConnectedDevice()` 返回):`mac`、`featureList`(24 项特性位)、`switchConfig`、固件/硬件/软件版本(`firmwareVersion` 等)、型号 `modelName`、电量快照(`batteryLevel` / `batteryVoltage` …)、蓝牙通话 `hasBt` / `btStatus`。
+  这些在 `connectDevice()` 内部已随认证流程读入,**无需再单独调用取设备信息/特性位的方法**——直接读本对象即可。
 - `SDKResult`:`{ success: boolean, error?: SDKError }`
 - `SDKError`:`{ code: SDKErrorCode, message: string }`
 
