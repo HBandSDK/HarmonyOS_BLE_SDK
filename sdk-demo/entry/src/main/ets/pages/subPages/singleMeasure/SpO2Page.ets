@@ -1,5 +1,5 @@
 import { router } from '@kit.ArkUI';
-import { VPBleSDK } from '@veepoo/vpble-sdk';
+import { SpO2AutoControl, VPBleSDK } from '@veepoo/vpble-sdk';
 
 @Entry
 @Component
@@ -29,7 +29,7 @@ struct SpO2Page {
     this.querying = true;
     const target = !this.autoEnabled;
     const r = await VPBleSDK.getInstance().bloodOxygenService.setAutoConfig({
-      control: 1, enabled: target,
+      control: SpO2AutoControl.WRITE, enabled: target,
       startHour: 0, startMinute: 0, endHour: 23, endMinute: 59,
     });
     if (r.success && r.data) {

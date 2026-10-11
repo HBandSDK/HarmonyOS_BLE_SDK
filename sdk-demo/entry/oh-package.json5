@@ -6,6 +6,7 @@
   "author": "",
   "license": "",
   "dependencies": {
-    "@veepoo/vpble-sdk": "file:../har/veepoo-vpble-sdk-1.1.0.har"
+    "@veepoo/vpble-sdk": "file:../har/veepoo-vpble-sdk-1.2.8.har",
+    "crop_library": "file:../crop_library"
   }
 }

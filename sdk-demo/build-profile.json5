@@ -2,25 +2,10 @@
   "app": {
     // 客户请用 DevEco Studio「File > Project Structure > Signing Configs > Automatically generate signature」
     // 生成自己的调试签名,或填入 AGC 申请的正式签名材料。此处留空 = 产出未签名 HAP(仅供编译验证)。
-    "signingConfigs": [
-      {
-        "name": "default",
-        "type": "HarmonyOS",
-        "material": {
-          "certpath": "/Users/veepoo/.ohos/config/default_sdk-demo_nmjwViCqkrLS2p2tiFOPJI0r1sIcv7WtLaF8kyJgkUE=.cer",
-          "keyAlias": "debugKey",
-          "keyPassword": "0000001A83E790014EA9202942D9229E43A161A3AEB36F17AFF176A42378B930EED9A2C80A18C335B27F",
-          "profile": "/Users/veepoo/.ohos/config/default_sdk-demo_nmjwViCqkrLS2p2tiFOPJI0r1sIcv7WtLaF8kyJgkUE=.p7b",
-          "signAlg": "SHA256withECDSA",
-          "storeFile": "/Users/veepoo/.ohos/config/default_sdk-demo_nmjwViCqkrLS2p2tiFOPJI0r1sIcv7WtLaF8kyJgkUE=.p12",
-          "storePassword": "0000001A6105B4EA7268E4E9B49D9239E1C9A31720366E2434810DD75D7C5B55F77FEF333BF2FE60E762"
-        }
-      }
-    ],
+    "signingConfigs": [],
     "products": [
       {
         "name": "default",
-        "signingConfig": "default",
         "compatibleSdkVersion": "5.0.0(12)",
         "runtimeOS": "HarmonyOS",
         "buildOption": {
@@ -45,6 +30,18 @@
     {
       "name": "entry",
       "srcPath": "./entry",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "crop_library",
+      "srcPath": "./crop_library",
       "targets": [
         {
           "name": "default",

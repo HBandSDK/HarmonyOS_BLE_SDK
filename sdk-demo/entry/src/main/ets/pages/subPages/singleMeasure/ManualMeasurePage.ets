@@ -86,7 +86,7 @@ struct ManualMeasurePage {
         Text(this.title).fontSize(18).fontWeight(FontWeight.Bold).fontColor('#333333')
       }.width('100%').height(56).padding({ left: 16, right: 16 }).alignItems(VerticalAlign.Center)
 
-      Text('走 0xDE 手动测量协议，设备多包回传合并后的原始字节需按业务自行解码')
+      Text('手动测量原始数据由设备分片回传并自动合并，具体解析需按业务自行处理')
         .fontSize(12).fontColor('#999999')
         .margin({ left: 16, right: 16, top: 12 })
 

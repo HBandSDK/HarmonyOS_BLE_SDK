@@ -11,7 +11,7 @@
 
 ## 1. 引入 SDK HAR
 
-SDK HAR 是**自包含**的:6 个杰理(JieLi)HAR 已打入其内部 `libs/`,你只需把 **1 个** `veepoo-vpble-sdk-1.1.0.har` 复制到工程的 `<模块>/libs/`,然后在**使用 SDK 的模块**(通常是 `entry`)的 `oh-package.json5` 里声明:
+SDK HAR 是**自包含**的:6 个杰理(JieLi)HAR 已打入其内部 `libs/`,你只需把 **1 个** `veepoo-vpble-sdk-1.2.0.har` 复制到工程的 `<模块>/libs/`,然后在**使用 SDK 的模块**(通常是 `entry`)的 `oh-package.json5` 里声明:
 
 ```json5
 {
@@ -19,7 +19,7 @@ SDK HAR 是**自包含**的:6 个杰理(JieLi)HAR 已打入其内部 `libs/`,你
   // ...
   "dependencies": {
     // ⚠️ 键必须是 "@veepoo/vpble-sdk"(与 HAR 内部包名一致),文件名可随意
-    "@veepoo/vpble-sdk": "file:libs/veepoo-vpble-sdk-1.1.0.har"
+    "@veepoo/vpble-sdk": "file:libs/veepoo-vpble-sdk-1.2.0.har"
   }
 }
 ```

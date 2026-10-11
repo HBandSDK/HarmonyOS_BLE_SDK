@@ -258,7 +258,7 @@ struct SpecialDevicePage {
   @Builder
   FourGCard() {
     Column({ space: 10 }) {
-      Text('4G 服务（0xBB）').fontSize(15).fontWeight(FontWeight.Medium).fontColor('#333333').width('100%')
+      Text('4G 服务').fontSize(15).fontWeight(FontWeight.Medium).fontColor('#333333').width('100%')
 
       Row() {
         Text('IP 地址').fontSize(13).fontColor('#666666').layoutWeight(1)
@@ -339,7 +339,7 @@ struct SpecialDevicePage {
   @Builder
   Jh58Card() {
     Column({ space: 10 }) {
-      Text('JH58 PPG 原始数据（0xEB）').fontSize(15).fontWeight(FontWeight.Medium).fontColor('#333333')
+      Text('JH58 PPG 原始数据').fontSize(15).fontWeight(FontWeight.Medium).fontColor('#333333')
         .width('100%')
 
       // 测试模式开关

@@ -32,9 +32,11 @@
     "pages/subPages/DevicePage",
     "pages/subPages/AuthPage",
     "pages/subPages/DialPage",
+    "pages/subPages/PhotoCropPage",
     "pages/subPages/OtaPage",
     "pages/subPages/SpecialDevicePage",
     "pages/subPages/HealthGlancePage",
-    "pages/subPages/WomenPage"
+    "pages/subPages/WomenPage",
+    "pages/subPages/GatingDebugPage"
   ]
 }

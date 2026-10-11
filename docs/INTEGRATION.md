@@ -10,11 +10,11 @@ VPBleSDK 是 Veepoo 手环的鸿蒙 BLE 协议栈,以 HAR 形态交付。一条 
 
 ## 2. 包内容
 
-集成方只需 **1 个** HAR:`dist/veepoo-vpble-sdk-1.1.0.har`(VPBleSDK 主体)。它是**自包含**的——6 个杰理(JieLi)HAR 已打入其内部 `libs/`,ohpm 会自动作为传递依赖拉取,无需集成方声明。`dist/har/` 另附这 6 个杰理 HAR 仅供查阅/替换:
+集成方只需 **1 个** HAR:`dist/veepoo-vpble-sdk-1.2.0.har`(VPBleSDK 主体)。它是**自包含**的——6 个杰理(JieLi)HAR 已打入其内部 `libs/`,ohpm 会自动作为传递依赖拉取,无需集成方声明。`dist/har/` 另附这 6 个杰理 HAR 仅供查阅/替换:
 
 | 文件 | 包名 | 用途 | 是否需集成方声明 |
 |---|---|---|---|
-| `veepoo-vpble-sdk-1.1.0.har` | **`@veepoo/vpble-sdk`** | VPBleSDK 主体(单例 + 31 领域服务) | ✅ 唯一需声明 |
+| `veepoo-vpble-sdk-1.2.0.har` | **`@veepoo/vpble-sdk`** | VPBleSDK 主体(单例 + 32 领域服务) | ✅ 唯一需声明 |
 | `JL_RCSP_HEALTH_*.har` | `jl_rcsp` | 杰理 RCSP 协议核心 | ❌(已内含) |
 | `JL_OTA_HEALTH_*.har` | `jl_ota` | 杰理 OTA | ❌ |
 | `JL_RCSP_OP_HEALTH_*.har` | `jl_rcsp_op` | 杰理 RCSP 操作 | ❌ |
@@ -30,9 +30,9 @@ VPBleSDK HAR 的内部包名(`oh-package.json5` 的 `name`)是 **`@veepoo/vpble-
 
 ```json5
 // ✅ 正确
-"@veepoo/vpble-sdk": "file:libs/veepoo-vpble-sdk-1.1.0.har"
+"@veepoo/vpble-sdk": "file:libs/veepoo-vpble-sdk-1.2.0.har"
 // ❌ 错误(键名不符 → "Inconsistent Dep Names" / "package not found")
-"vpsdk": "file:libs/veepoo-vpble-sdk-1.1.0.har"
+"vpsdk": "file:libs/veepoo-vpble-sdk-1.2.0.har"
 ```
 
 文件名可随意(带版本号便于管理),但键 + `import from` 都必须是 `@veepoo/vpble-sdk`。
@@ -107,10 +107,10 @@ sdk.deviceService.getBatteryInfo()             // → Promise<BatteryInfoResult>
 sdk.healthService.getStepData(HealthQueryDay.TODAY)        // → Promise<StepDataResult>
 sdk.healthService.getSleepData(HealthQueryDay.TODAY)       // → Promise<SleepDataResult>
 sdk.healthService.getHealthData(day, position, onProgress) // → Promise<HealthDataResult>
-sdk.heartRateService.startMeasurement(...)     // 实时心率测量
+sdk.heartRateService.startMeasurement()        // → 实时心率测量,完整签名与回调见 API.md 第 11 章
 ```
 
-31 个服务及代表方法见 [API.md](API.md)。返回结构统一为 `{ success, data?, errorMessage? }` 或 `SDKResult { success, error? }`。
+32 个服务**每个方法的完整签名、参数取值、返回模型与调用时序**见 [API.md](API.md)(按领域分章,章首有方法索引)。返回结构统一为 `{ success, data?, errorMessage? }` 或 `SDKResult { success, error? }`。
 
 ## 9. 订阅事件
 
@@ -122,12 +122,13 @@ VPBleSDK.getInstance().on(SDKEventType.BATTERY_UPDATE, cb);
 // 离开时:VPBleSDK.getInstance().off(SDKEventType.BATTERY_UPDATE, cb);
 ```
 
-`SDKEventType` 全集(26 项):
+`SDKEventType` 全集(27 项):
 
 | 事件 | 含义 |
 |---|---|
 | `CONNECTION_STATE_CHANGED` | 连接状态变更(载荷 `{oldState, newState}`) |
 | `BATTERY_UPDATE` | 电量更新 |
+| `PTT_STATE_CHANGE` | 设备进入/退出 PTT 模式(载荷 `{pttState}`,0=退出 / 1=进入;另见 `pttService.onEnterPttTest()`) |
 | `DEVICE_INFO` / `HEALTH_DATA` | 设备信息 / 健康数据 |
 | `FIND_DEVICE_STATE` / `FIND_PHONE_REQUEST` | 查找设备 / 查找手机 |
 | `PHOTO_CONTROL` | 拍照控制 |
@@ -144,6 +145,8 @@ VPBleSDK.getInstance().on(SDKEventType.BATTERY_UPDATE, cb);
 | `PROTOCOL_ERROR` / `TRANSPORT_ERROR` | 协议错误 / 传输错误 |
 
 `ConnectionState`:`UNINITIALIZED=0 / READY=1 / BINDING=2 / CONNECTED=3 / DISCONNECTING=4 / DISCONNECTED=5`。
+
+各事件 **payload 的完整字段结构**见 [API.md](API.md) 第 5 节(事件总线总表)与附录 B(数据模型字段表)。
 
 ## 10. 日志
 

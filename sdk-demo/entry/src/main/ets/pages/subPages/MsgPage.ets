@@ -163,7 +163,7 @@ struct MsgPage {
   /**
    * 点击某行 → 构造随机内容 → 调用对应消息发送接口，形成测试闭环
    *
-   * 行 index 即通知协议的来源字节：0=来电、1=短信、≥2=各 App 协议码。
+   * 行 index 对应 SDK 消息发送接口的类别顺序：来电、短信、各 App 通知。
    */
   async sendDemo(index: number, label: string): Promise<void> {
     const item = this.switchItems[index];

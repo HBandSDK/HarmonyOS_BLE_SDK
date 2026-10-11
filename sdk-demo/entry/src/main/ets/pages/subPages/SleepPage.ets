@@ -58,7 +58,7 @@ struct SleepPage {
     });
   }
 
-  // sleepLine hex（每 2 字节一个点，高 3 位为阶段）→ 连续同阶段片段
+  // sleepLine 十六进制串按 SDK 约定的编码规则还原为连续同阶段片段
   private parseSleepLine(sleepLine: string): SleepStageBlock[] {
     const blocks: SleepStageBlock[] = [];
     if (!sleepLine || sleepLine.length < 4) {

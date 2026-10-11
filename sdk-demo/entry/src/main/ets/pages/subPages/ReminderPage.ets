@@ -16,13 +16,13 @@ struct ReminderPage {
   @State showToast: boolean = false;
   private toastTimer: number = -1;
 
-  // 喝水提醒（0xE7）
+  // 喝水提醒
   @State drinkEnabled: boolean = false;
   @State drinkStart: string = '08:00';
   @State drinkEnd: string = '20:00';
   @State drinkInterval: number = 30;
 
-  // 久坐提醒（0xE1）
+  // 久坐提醒
   @State sedEnabled: boolean = false;
   @State sedStart: string = '09:00';
   @State sedEnd: string = '18:00';

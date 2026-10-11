@@ -10,15 +10,15 @@ import {
 } from '@veepoo/vpble-sdk';
 
 /**
- * 女性生理周期（0x85）示例
+ * 女性生理周期示例
  *
  * 五种状态：无状态 / 月经 / 备孕 / 怀孕 / 妈咪。不同状态**必填的日期不同**，
- * 缺失时 SDK 会直接抛错（不向设备发畸形帧）：
+ * 缺失时 SDK 会直接抛错（不向设备发无效数据）：
  *   - MENES / PREREADY：必填 menesLasterday（最近一次经期首日）
  *   - PREING          ：必填 confinementDay（预产期）
  *   - MAMAMI          ：必填 babyBirthday + babySex，另需 menesLasterday
  *
- * readWomenState(womenTag) 的 womenTag 是设备侧协议版本标记，传 3 时按新版布局解析；
+ * readWomenState(womenTag) 的 womenTag 是设备侧数据版本标记，传 3 时按新版布局解析；
  * 不确定就用默认 0。
  */
 @Entry

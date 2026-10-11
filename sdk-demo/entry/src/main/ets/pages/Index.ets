@@ -1,4 +1,4 @@
-import { VPBleSDK, SDK_VERSION, ConnectionState, SDKEventType, SDKResult, UserProfile, GoalConfig, BtState, LogLevel, Logger } from '@veepoo/vpble-sdk';
+import { VPBleSDK, SDK_VERSION, ConnectionState, SDKEventType, SDKResult, UserProfile, GoalConfig, BtState, LogLevel, Logger, HealthDataPushEvent } from '@veepoo/vpble-sdk';
 import { BleDevice } from '@veepoo/vpble-sdk';
 import { router } from '@kit.ArkUI';
 import { preferences, uniformTypeDescriptor as utd } from '@kit.ArkData';
@@ -41,6 +41,10 @@ struct Index {
   // --- 日志 ---
   @State logMessages: string[] = [];
   logScroll: Scroller = new Scroller();
+
+  // --- 步数查询节流 ---
+  private lastStepQueryMs: number = 0;
+  private static readonly STEP_QUERY_MIN_INTERVAL_MS: number = 5000;
 
   build() {
     Stack() {
@@ -269,6 +273,7 @@ struct Index {
       this.FuncButton('表盘与UI', 'pages/subPages/DialPage')
       this.FuncButton('固件升级', 'pages/subPages/OtaPage')
       this.FuncButton('特殊设备', 'pages/subPages/SpecialDevicePage')
+      this.FuncButton('门控验证', 'pages/subPages/GatingDebugPage')
     }
     .width('100%')
     .margin({ top: 8 })
@@ -387,9 +392,16 @@ struct Index {
       this.updateDeviceInfo();
     });
 
-    // 监听健康数据推送（步数等）
-    sdk.on(SDKEventType.HEALTH_DATA, (_data: ESObject) => {
-      this.queryStepData();
+    // 监听健康数据推送（设备主动上报 → 刷新首页步数）。
+    // 注意：getStepData 的响应帧自身也会以 type='step' 从 HEALTH_DATA 冒出，
+    // 若无条件回查会形成"查询→响应→再查询"自激励环路（实测 ~30ms/次打满链路），
+    // 且测量类页面打开时设备变忙、响应延迟至秒级。故：跳过 step 回声 + 5s 节流。
+    sdk.on(SDKEventType.HEALTH_DATA, (data: ESObject) => {
+      const ev = data as HealthDataPushEvent;
+      if (ev.type === 'step') {
+        return;
+      }
+      this.queryStepDataThrottled();
     });
 
     sdk.on(SDKEventType.TRANSPORT_ERROR, (data: ESObject) => {
@@ -433,12 +445,23 @@ struct Index {
     this.addLog(`bt = ${dev.hasBt ? "有" : "无"}, ${dev.btStatus?.btState}`)
   }
 
+  /** 节流版步数查询：两次查询间隔 >= 5s，防推送风暴下高频轮询设备 */
+  private queryStepDataThrottled(): void {
+    const now = Date.now();
+    if (now - this.lastStepQueryMs < Index.STEP_QUERY_MIN_INTERVAL_MS) {
+      return;
+    }
+    this.lastStepQueryMs = now;
+    this.queryStepData();
+  }
+
   private queryStepData(): void {
     VPBleSDK.getInstance().healthService.getStepData().then((result) => {
       if (result.success && result.data) {
         const steps = result.data.steps;
+        // getStepData 返回协议原始值：距离=米 / 热量=0.1kcal，显示层换算 km/kcal
         const distanceKm = (result.data.distance / 1000).toFixed(3);
-        const calories = result.data.calories.toFixed(1);
+        const calories = (result.data.calories / 10).toFixed(1);
         this.stepInfo = `${steps}步  ${distanceKm}km  ${calories}kcal`;
         this.addLog(`Steps: ${steps}步, ${distanceKm}km, ${calories}kcal`);
       }

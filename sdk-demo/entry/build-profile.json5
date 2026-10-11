@@ -1,6 +1,12 @@
 {
   "apiType": "stageMode",
-  "buildOption": {},
+  "buildOption": {
+    "sourceOption": {
+      "workers": [
+        "./src/main/ets/workers/HrvWorkers.ets"
+      ]
+    }
+  },
   "buildOptionSet": [
     {
       "name": "release",

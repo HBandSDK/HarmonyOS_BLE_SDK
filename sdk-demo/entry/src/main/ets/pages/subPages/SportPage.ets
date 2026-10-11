@@ -15,7 +15,7 @@ struct SportPage {
   // 今日运动汇总
   @State steps: number = 0;
   @State distance: number = 0; // 米
-  @State calories: number = 0; // kcal
+  @State calories: number = 0; // 0.1kcal（协议原始值）
   @State loadingSummary: boolean = false;
 
   // 运动模式支持
@@ -29,9 +29,7 @@ struct SportPage {
   @State rt: SportControlRecord | null = null;
 
   // 历史记录
-  @State crc0: number = 0;
-  @State crc1: number = 0;
-  @State crc2: number = 0;
+  @State crcList: number[] = [];
   @State history: SportData | null = null;
   @State readingHistory: boolean = false;
 
@@ -96,7 +94,7 @@ struct SportPage {
     }
   }
 
-  // 0xDA 运动控制：开始 / 暂停 / 继续 / 停止
+  // 运动控制：开始 / 暂停 / 继续 / 停止
   private async control(code: SportControlCode): Promise<void> {
     if (this.isWriting) {
       return;
@@ -126,10 +124,8 @@ struct SportPage {
     try {
       const r = await VPBleSDK.getInstance().sportService.readModeCrc();
       if (r.success && r.data) {
-        this.crc0 = r.data.crc0;
-        this.crc1 = r.data.crc1;
-        this.crc2 = r.data.crc2;
-        this.showToastMsg('运动模式 CRC 已读取');
+        this.crcList = r.data.crcList;
+        this.showToastMsg(`运动模式 CRC 已读取（${r.data.crcList.length} 条）`);
       } else {
         this.showToastMsg(`CRC 失败：${r.errorMessage ?? '未知'}`);
       }
@@ -224,7 +220,7 @@ struct SportPage {
           Text('km').fontSize(11).fontColor('#999999')
         }.layoutWeight(1)
         Column() {
-          Text(`${this.calories.toFixed(1)}`).fontSize(24).fontWeight(FontWeight.Bold).fontColor('#FF9500')
+          Text(`${(this.calories / 10).toFixed(1)}`).fontSize(24).fontWeight(FontWeight.Bold).fontColor('#FF9500')
           Text('kcal').fontSize(11).fontColor('#999999')
         }.layoutWeight(1)
       }.width('100%')
@@ -237,7 +233,7 @@ struct SportPage {
   @Builder
   ControlCard() {
     Column({ space: 10 }) {
-      Text('专项运动控制（0xDA）').fontSize(15).fontWeight(FontWeight.Medium).fontColor('#333333')
+      Text('专项运动控制').fontSize(15).fontWeight(FontWeight.Medium).fontColor('#333333')
         .width('100%')
 
       Row() {
@@ -246,7 +242,7 @@ struct SportPage {
           .layoutWeight(1).height(40).type(InputType.Number)
           .backgroundColor('#F5F5F5').borderRadius(6)
           .onChange((v: string) => { this.motionType = v; })
-        Text('数值含义见协议').fontSize(11).fontColor('#BBBBBB')
+        Text('数值含义见开发文档').fontSize(11).fontColor('#BBBBBB')
           .width(96).margin({ left: 8 })
       }.width('100%').alignItems(VerticalAlign.Center)
 
@@ -307,7 +303,7 @@ struct SportPage {
   HistoryCard() {
     Column({ space: 10 }) {
       Row() {
-        Text('历史运动记录（0xD3/D4）').fontSize(15).fontWeight(FontWeight.Medium).fontColor('#333333')
+        Text('历史运动记录').fontSize(15).fontWeight(FontWeight.Medium).fontColor('#333333')
           .layoutWeight(1)
         Button('读CRC').fontSize(12).height(30)
           .backgroundColor('#8E8E93').fontColor(Color.White).borderRadius(6)
@@ -315,12 +311,12 @@ struct SportPage {
       }.width('100%')
 
       Row() {
-        Text('槽位0').fontSize(12).fontColor('#666666').layoutWeight(1)
-        Text(`0x${this.crc0.toString(16).toUpperCase()}`).fontSize(12).fontColor('#333333')
-        Text('槽位1').fontSize(12).fontColor('#666666').layoutWeight(1).margin({ left: 16 })
-        Text(`0x${this.crc1.toString(16).toUpperCase()}`).fontSize(12).fontColor('#333333')
-        Text('槽位2').fontSize(12).fontColor('#666666').layoutWeight(1).margin({ left: 16 })
-        Text(`0x${this.crc2.toString(16).toUpperCase()}`).fontSize(12).fontColor('#333333')
+        Text('有效CRC').fontSize(12).fontColor('#666666').layoutWeight(1)
+        // GPS 设备最多 5 条、非 GPS 设备最多 3 条；已过滤空槽位
+        Text(this.crcList.length > 0
+          ? this.crcList.map((c: number): string => `0x${c.toString(16).toUpperCase()}`).join('  ')
+          : '--')
+          .fontSize(12).fontColor('#333333').layoutWeight(2)
       }.width('100%')
 
       Row() {

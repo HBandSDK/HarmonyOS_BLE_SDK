@@ -68,6 +68,11 @@ struct HrvPage {
     }
   }
 
+  /** HRV 显示值：0 或 255（设备无效值占位）显示 -- */
+  private displayHrv(v: number): string {
+    return v > 0 && v !== 255 ? `${v}` : '--';
+  }
+
   build() {
     Column() {
       Row() {
@@ -78,7 +83,7 @@ struct HrvPage {
 
       Row() {
         Column() {
-          Text(this.hrv > 0 ? `${this.hrv}` : '--').fontSize(32).fontWeight(FontWeight.Bold).fontColor('#5856D6')
+          Text(this.displayHrv(this.hrv)).fontSize(32).fontWeight(FontWeight.Bold).fontColor('#5856D6')
           Text('HRV').fontSize(11).fontColor('#999999')
         }.layoutWeight(1)
         Column() {

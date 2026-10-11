@@ -70,8 +70,8 @@ struct AutoMeasurePage {
 
   aboutToAppear(): void {
     // 设备是否支持「多功能定时自动测量」由 A7 特性位 b3AutoMeasure 决定：
-    //   1 = 走 B3 协议（本页可用，可配置时间段与间隔）
-    //   0 = 走 B8 协议（仅开/关，请使用「自动监测」页）
+    //   1 = 支持定时模式（本页可用，可配置时间段与间隔）
+    //   0 = 仅支持开/关模式（请使用「自动监测」页）
     const dev = VPBleSDK.getInstance().getConnectedDevice();
     const b3 = dev?.featureList?.b3AutoMeasure;
     this.b3Value = b3 === undefined || b3 === null ? '未知' : `${b3}`;
@@ -328,7 +328,7 @@ struct AutoMeasurePage {
   @Builder
   UnsupportedHint() {
     Column() {
-      Text('当前设备不支持「多功能定时自动测量」(B3 协议)')
+      Text('当前设备不支持「多功能定时自动测量」')
         .fontSize(15)
         .fontColor('#FF9800')
         .textAlign(TextAlign.Center)
@@ -336,7 +336,7 @@ struct AutoMeasurePage {
         .fontSize(12)
         .fontColor('#999999')
         .margin({ top: 6 })
-      Text('该设备走 B8 开关协议，请使用「自动监测」页控制自动测量开关')
+      Text('该设备仅支持自动测量开关控制，请使用「自动监测」页')
         .fontSize(13)
         .fontColor('#666666')
         .textAlign(TextAlign.Center)

@@ -6,13 +6,13 @@ interface MeasureEntry {
   /** DeviceFeatureList 字段名 */
   key: string;
   page: string;
-  /** 心率反向判断：0x00=有，0x01=无 */
+  /** 心率反向判断：能力字段为 0 表示有，为 1 表示无（默认） */
   invert?: boolean;
-  /** 微体检/梅脱走 0xDE 手动测量，按 type 区分 */
+  /** 微体检/梅脱走手动测量接口，按 manualType 区分 */
   manualType?: number;
 }
 
-// 心率 invert：heartRateFunction 0x00=有(默认)，0x01=无；其余字段 0=不支持，非 0 支持
+// 心率 invert：heartRateFunction 值为 0 表示有(默认)、1 表示无；其余字段 0=不支持，非 0 支持
 const MEASURES: MeasureEntry[] = [
   { label: '心率', key: 'heartRateFunction', page: 'pages/subPages/singleMeasure/HrPage', invert: true },
   { label: '血压', key: 'bloodPressure', page: 'pages/subPages/singleMeasure/BpPage' },
